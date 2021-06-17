@@ -1,8 +1,8 @@
 # Yii Validator
 
-[![Latest Stable Version](https://poser.pugx.org/jin2chen/yii-validator/v/stable.png)](https://packagist.org/packages/jin2chen/yii-validator)
-[![Total Downloads](https://poser.pugx.org/jin2chen/yii-validator/downloads.png)](https://packagist.org/packages/jin2chen/yii-validator)
-[![License](http://poser.pugx.org/jin2chen/yii-validator/license)](https://packagist.org/packages/jin2chen/yii-validator)
+[![Latest Stable Version](https://poser.pugx.org/jin2chen/yii-validator/v)](https://packagist.org/packages/jin2chen/yii-validator)
+[![Total Downloads](https://poser.pugx.org/jin2chen/yii-validator/downloads)](https://packagist.org/packages/jin2chen/yii-validator)
+[![License](https://poser.pugx.org/jin2chen/yii-validator/license)](https://packagist.org/packages/jin2chen/yii-validator)
 [![Build status](https://github.com/jin2chen/yii-validator/workflows/build/badge.svg)](https://github.com/jin2chen/yii-validator/actions?query=workflow%3Abuild)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/jin2chen/yii-validator/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/jin2chen/yii-validator/?branch=master)
 [![Code Coverage](https://scrutinizer-ci.com/g/jin2chen/yii-validator/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/jin2chen/yii-validator/?branch=master)
