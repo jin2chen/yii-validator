@@ -1,35 +1,42 @@
-# Yii Validator
+<?php
 
-[![Latest Stable Version](https://poser.pugx.org/jin2chen/yii-validator/v)](https://packagist.org/packages/jin2chen/yii-validator)
-[![Total Downloads](https://poser.pugx.org/jin2chen/yii-validator/downloads)](https://packagist.org/packages/jin2chen/yii-validator)
-[![License](https://poser.pugx.org/jin2chen/yii-validator/license)](https://packagist.org/packages/jin2chen/yii-validator)
-[![Build status](https://github.com/jin2chen/yii-validator/workflows/build/badge.svg)](https://github.com/jin2chen/yii-validator/actions?query=workflow%3Abuild)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/jin2chen/yii-validator/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/jin2chen/yii-validator/?branch=master)
-[![Code Coverage](https://scrutinizer-ci.com/g/jin2chen/yii-validator/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/jin2chen/yii-validator/?branch=master)
-[![static analysis](https://github.com/jin2chen/yii-validator/workflows/static%20analysis/badge.svg)](https://github.com/jin2chen/yii-validator/actions?query=workflow%3A%22static+analysis%22)
+/** @noinspection PhpMissingFieldTypeInspection */
 
-Validator for nest validation.
+declare(strict_types=1);
 
-## Requirements
+namespace jin2chen\YiiValidator\Tests;
 
-- PHP 7.4 or higher.
-
-## Installation
-
-The package could be installed with composer:
-
-```shell
-composer require jin2chen/yii-validator --prefer-dist
-```
-
-## General usage
-```php
 use jin2chen\YiiValidator\Rule\Many;
 use jin2chen\YiiValidator\Rule\One;
 use jin2chen\YiiValidator\Validator;
+use PHPUnit\Framework\TestCase;
 use Yiisoft\Validator\DataSetInterface;
 use Yiisoft\Validator\Rule;
 use Yiisoft\Validator\RulesProviderInterface;
+
+class ValidatorTest extends TestCase
+{
+    public function testValidate()
+    {
+        $form = new UserForm();
+        $validator = new Validator();
+
+        $form->profile = new Profile();
+        $form->profile->website = '//www.jinchen.me';
+
+        $address1 = new Address();
+        $address2 = new Address();
+        $address2->state = 'ABC';
+        $addresses = [
+            $address1,
+            $address2,
+        ];
+        $form->addresses = $addresses;
+
+        $results = $validator->validate($form);
+        $this->assertFalse($results->isValid());
+    }
+}
 
 abstract class Model implements DataSetInterface, RulesProviderInterface
 {
@@ -202,7 +209,7 @@ final class Address extends Model
     {
         return [
             Rule\Required::rule(),
-            Rule\MatchRegularExpression::rule('/^[A-Z]{2}$/')
+            Rule\MatchRegularExpression::rule('/^[A-Z]{2}$/'),
         ];
     }
 
@@ -213,53 +220,3 @@ final class Address extends Model
         ];
     }
 }
-
-$form = new UserForm();
-$validator = new Validator();
-
-$form->profile = new Profile();
-$form->profile->website = 'www.jinchen.me';
-
-$address1 = new Address();
-$address2 = new Address();
-$address2->state = 'ABC';
-$addresses = [
-    $address1,
-    $address2,
-];
-$form->addresses = $addresses;
-
-$results = $validator->validate($form);
-print_r($results->getErrors());
-
-//[
-//    'firstname' => ['Value cannot be blank.'],
-//    'lastname' => ['Value cannot be blank.'],
-//    'email' => ['Value cannot be blank.'],
-//    'profile.website' => ['This value is not a valid URL.'],
-//    'addresses.0.street' => ['Value cannot be blank.'],
-//    'addresses.0.city' => ['Value cannot be blank.'],
-//    'addresses.0.state' => ['Value cannot be blank.'],
-//    'addresses.1.street' => ['Value cannot be blank.'],
-//    'addresses.1.city' => ['Value cannot be blank.'],
-//    'addresses.1.state' => ['Value is invalid.'],
-//];
-```
-
-## Testing
-
-### Unit testing
-
-The package is tested with [PHPUnit](https://phpunit.de/). To run tests:
-
-```shell
-./vendor/bin/phpunit
-```
-
-### Static analysis
-
-The code is statically analyzed with [Psalm](https://psalm.dev/). To run static analysis:
-
-```shell
-./vendor/bin/psalm
-```
