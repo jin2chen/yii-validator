@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace jin2chen\YiiValidator\Rule;
 
 use InvalidArgumentException;
+use jin2chen\YiiValidator\NestRule;
 use Yiisoft\Validator\DataSetInterface;
 use Yiisoft\Validator\Result;
 use Yiisoft\Validator\ValidationContext;
@@ -26,7 +27,7 @@ final class One extends NestRule
             throw new InvalidArgumentException();
         }
 
-        $results = $this->getValidator()->validate($value);
+        $results = $this->getValidator()->validate($value, $this->getRules());
         $this->addResultSet($results, $context->getAttribute() ?? '');
 
         return new Result();

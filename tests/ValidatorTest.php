@@ -1,5 +1,7 @@
 <?php
 
+/** @noinspection PhpUnused */
+
 /** @noinspection PhpMissingFieldTypeInspection */
 
 declare(strict_types=1);
@@ -11,6 +13,7 @@ use jin2chen\YiiValidator\Rule\One;
 use jin2chen\YiiValidator\Validator;
 use PHPUnit\Framework\TestCase;
 use Yiisoft\Validator\DataSetInterface;
+use Yiisoft\Validator\Formatter;
 use Yiisoft\Validator\Rule;
 use Yiisoft\Validator\RulesProviderInterface;
 
@@ -19,7 +22,7 @@ class ValidatorTest extends TestCase
     public function testValidate()
     {
         $form = new UserForm();
-        $validator = new Validator();
+        $validator = (new Validator())->withFormatter(new Formatter());
 
         $form->profile = new Profile();
         $form->profile->website = '//www.jinchen.me';
@@ -33,8 +36,21 @@ class ValidatorTest extends TestCase
         ];
         $form->addresses = $addresses;
 
+        $expect = [
+            'firstname' => ['Value cannot be blank.'],
+            'lastname' => ['Value cannot be blank.'],
+            'email' => ['Value cannot be blank.'],
+            'profile.website' => ['This value is not a valid URL.'],
+            'addresses.0.street' => ['Value cannot be blank.'],
+            'addresses.0.city' => ['Value cannot be blank.'],
+            'addresses.0.state' => ['Value cannot be blank.'],
+            'addresses.1.street' => ['Value cannot be blank.'],
+            'addresses.1.city' => ['Value cannot be blank.'],
+            'addresses.1.state' => ['Value is invalid.'],
+        ];
         $results = $validator->validate($form);
         $this->assertFalse($results->isValid());
+        $this->assertEquals($expect, $results->getErrors());
     }
 }
 

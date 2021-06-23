@@ -9,6 +9,8 @@ use IteratorAggregate;
 
 /**
  * Validator validates {@link DataSetInterface} against rules set for data set attributes.
+ *
+ * @psalm-import-type AggregateRule from \jin2chen\YiiValidator\Validator
  */
 interface ValidatorInterface
 {
@@ -16,7 +18,8 @@ interface ValidatorInterface
      * Validate data set against rules set for data set attributes.
      *
      * @param DataSetInterface|mixed|RulesProviderInterface $data Data set to validate.
-     * @param iterable<string, iterable<array-key, Rule|callable>> $rules
+     * @param Rule[][] $rules
+     * @psalm-param AggregateRule $rules
      *
      * @return ResultSet Validation results.
      */
@@ -26,11 +29,14 @@ interface ValidatorInterface
 /**
  * Allows to have data validation rules together with the data itself.
  * Such object can be passed as an only argument to the {@see ValidatorInterface}.
+ *
+ * @psalm-import-type AggregateRule from \jin2chen\YiiValidator\Validator
  */
 interface RulesProviderInterface extends DataSetInterface
 {
     /**
-     * @return iterable<string, iterable<array-key, Rule|callable>> A set of validation rules.
+     * @return Rule[][] A set of validation rules.
+     * @psalm-return AggregateRule
      */
     public function getRules(): iterable;
 }

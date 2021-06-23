@@ -1,4 +1,9 @@
 grumphp:
     tasks:
-      phpcs: ~
-      psalm: ~
+      phpcs:
+        ignore_patterns:
+          - /^tests\/(.*)/
+      psalm:
+        config: psalm.xml
+        ignore_patterns:
+          - /^tests\/(.*)/

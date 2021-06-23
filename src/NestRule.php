@@ -2,17 +2,23 @@
 
 declare(strict_types=1);
 
-namespace jin2chen\YiiValidator\Rule;
+namespace jin2chen\YiiValidator;
 
-use jin2chen\YiiValidator\NestRuleInterface;
-use jin2chen\YiiValidator\Validator;
 use Yiisoft\Validator\ResultSet;
 use Yiisoft\Validator\Rule;
 
+/**
+ * @psalm-import-type AggregateRule from Validator
+ */
 abstract class NestRule extends Rule implements NestRuleInterface
 {
     private ?ResultSet $resultSet = null;
     private ?Validator $validator = null;
+    /**
+     * @var Rule[][]
+     * @psalm-var AggregateRule
+     */
+    private iterable $rules = [];
 
     public function getResultSet(): ResultSet
     {
@@ -32,9 +38,31 @@ abstract class NestRule extends Rule implements NestRuleInterface
         return $this->validator;
     }
 
-    public function setValidator(Validator $validator): void
+    public function setValidator(Validator $validator): NestRuleInterface
     {
         $this->validator = $validator;
+        return $this;
+    }
+
+    /**
+     * @return Rule[][]
+     * @psalm-return AggregateRule
+     */
+    public function getRules(): iterable
+    {
+        return $this->rules;
+    }
+
+    /**
+     * @param Rule[][] $rules
+     * @psalm-param AggregateRule $rules
+     * @return NestRuleInterface
+     */
+    public function withRules(iterable $rules): NestRuleInterface
+    {
+        $new = clone $this;
+        $new->rules = $rules;
+        return $new;
     }
 
     protected function addResultSet(ResultSet $resultSet, string $prefix): void

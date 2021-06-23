@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace jin2chen\YiiValidator\Rule;
 
 use InvalidArgumentException;
+use jin2chen\YiiValidator\NestRule;
 use Yiisoft\Validator\DataSetInterface;
 use Yiisoft\Validator\Result;
 use Yiisoft\Validator\ValidationContext;
@@ -33,7 +34,7 @@ final class Many extends NestRule
          * @var DataSetInterface $item
          */
         foreach ($value as $index => $item) {
-            $results = $this->getValidator()->validate($item);
+            $results = $this->getValidator()->validate($item, $this->getRules());
 
             $this->addResultSet($results, $attribute . '.' . $index);
         }

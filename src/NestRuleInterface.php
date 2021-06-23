@@ -11,5 +11,5 @@ interface NestRuleInterface extends RuleInterface
 {
     public function getResultSet(): ResultSet;
     public function getValidator(): Validator;
-    public function setValidator(Validator $validator): void;
+    public function setValidator(Validator $validator): NestRuleInterface;
 }
