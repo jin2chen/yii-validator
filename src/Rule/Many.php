@@ -29,11 +29,12 @@ final class Many extends NestRule
         $attribute = $context->getAttribute() ?: '';
 
         /**
-         * @var mixed $index
+         * @var int $index
          * @var DataSetInterface $item
          */
         foreach ($value as $index => $item) {
             $results = $this->getValidator()->validate($item);
+
             $this->addResultSet($results, $attribute . '.' . $index);
         }
 

@@ -25,12 +25,6 @@ final class Validator implements ValidatorInterface
         $this->formatter = $formatter;
     }
 
-    /**
-     * @param mixed $data
-     * @param iterable<string, Rule[]> $rules
-     *
-     * @return ResultSet
-     */
     public function validate($data, $rules = []): ResultSet
     {
         if (!$data instanceof DataSetInterface) {
@@ -70,7 +64,7 @@ final class Validator implements ValidatorInterface
     }
 
     /**
-     * @param Rule[] $rules
+     * @param iterable<array-key, Rule|callable> $rules
      * @return NestRuleInterface|null
      */
     private function extractNestRule(iterable $rules): ?NestRuleInterface
