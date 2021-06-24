@@ -1,4 +1,4 @@
-# Yii Validator
+# Yii Nest Validator
 
 [![Latest Stable Version](https://poser.pugx.org/jin2chen/yii-validator/v)](https://packagist.org/packages/jin2chen/yii-validator)
 [![Total Downloads](https://poser.pugx.org/jin2chen/yii-validator/downloads)](https://packagist.org/packages/jin2chen/yii-validator)
@@ -23,6 +23,7 @@ composer require jin2chen/yii-validator --prefer-dist
 ```
 
 ## General usage
+### 1. Use `DataSetInterface` and `RulesProviderInterface`
 ```php
 use jin2chen\YiiValidator\Rule\Many;
 use jin2chen\YiiValidator\Rule\One;
@@ -244,6 +245,65 @@ print_r($results->getErrors());
 //    'addresses.1.city' => ['Value cannot be blank.'],
 //    'addresses.1.state' => ['Value is invalid.'],
 //];
+```
+
+### 2. Use array data
+```php
+use jin2chen\YiiValidator\Rule\Many;
+use jin2chen\YiiValidator\Rule\One;
+use jin2chen\YiiValidator\Validator;
+use Yiisoft\Validator\Rule;
+
+$data = [
+    'email' => 'abc.com',
+    'profile' => [
+        'website' => 'www.jinchen.me',
+    ],
+    'addresses' => [
+        [
+            'id' => 22,
+            'state' => 'AAA',
+        ],
+        [
+            'id' => 32,
+            'state' => 'BBB',
+        ],
+    ],
+];
+
+$rules = [
+    'email' => [
+        Rule\Email::rule(),
+    ],
+    'profile' => [
+        One::rule()->withRules(
+            [
+                'website' => [
+                    Rule\Url::rule(),
+                ],
+            ]
+        ),
+    ],
+    'addresses' => [
+        Many::rule()->withRules(
+            [
+                'state' => [
+                    Rule\MatchRegularExpression::rule('/^[A-Z]{2}$/'),
+                ],
+            ]
+        )->withIndexKey('id'),
+    ],
+];
+
+$validator = new Validator();
+$results = $validator->validate($data, $rules);
+print_r($results->getErrors());
+//[
+//    'email' => ['This value is not a valid email address.'],
+//    'profile.website' => ['This value is not a valid URL.'],
+//    'addresses.22.state' => ['Value is invalid.'],
+//    'addresses.32.state' => ['Value is invalid.'],
+//]
 ```
 
 ## Testing

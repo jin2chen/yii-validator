@@ -6,10 +6,12 @@ namespace jin2chen\YiiValidator\Rule;
 
 use InvalidArgumentException;
 use jin2chen\YiiValidator\NestRule;
-use Yiisoft\Validator\DataSetInterface;
 use Yiisoft\Validator\Result;
 use Yiisoft\Validator\ValidationContext;
 
+/**
+ * @method One withRules(iterable $rules)
+ */
 final class One extends NestRule
 {
     public static function rule(): One
@@ -19,12 +21,8 @@ final class One extends NestRule
 
     protected function validateValue($value, ValidationContext $context = null): Result
     {
-        if (!$value instanceof DataSetInterface) {
-            throw new InvalidArgumentException();
-        }
-
         if (!$context) {
-            throw new InvalidArgumentException();
+            throw new InvalidArgumentException('Context must be set.');
         }
 
         $results = $this->getValidator()->validate($value, $this->getRules());

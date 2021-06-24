@@ -12,7 +12,7 @@
         <directory name="src" />
     </projectFiles>
     <stubs>
-        <file name="stubs/yii-validator.phpstub" />
+        <file name=".stubs/yii-validator.phpstub" />
     </stubs>
 </psalm>
 

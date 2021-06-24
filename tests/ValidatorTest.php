@@ -1,7 +1,6 @@
 <?php
 
 /** @noinspection PhpUnused */
-
 /** @noinspection PhpMissingFieldTypeInspection */
 
 declare(strict_types=1);
@@ -14,12 +13,14 @@ use jin2chen\YiiValidator\Validator;
 use PHPUnit\Framework\TestCase;
 use Yiisoft\Validator\DataSetInterface;
 use Yiisoft\Validator\Formatter;
+use Yiisoft\Validator\PostValidationHookInterface;
+use Yiisoft\Validator\ResultSet;
 use Yiisoft\Validator\Rule;
 use Yiisoft\Validator\RulesProviderInterface;
 
 class ValidatorTest extends TestCase
 {
-    public function testValidate()
+    public function testDataSetValidate()
     {
         $form = new UserForm();
         $validator = (new Validator())->withFormatter(new Formatter());
@@ -52,6 +53,61 @@ class ValidatorTest extends TestCase
         $this->assertFalse($results->isValid());
         $this->assertEquals($expect, $results->getErrors());
     }
+
+    public function testArrayValidate()
+    {
+        $data = [
+            'email' => 'abc.com',
+            'profile' => [
+                'website' => 'www.jinchen.me',
+            ],
+            'addresses' => [
+                [
+                    'id' => 22,
+                    'state' => 'AAA',
+                ],
+                [
+                    'id' => 32,
+                    'state' => 'BBB',
+                ],
+            ],
+        ];
+
+        $rules = [
+            'email' => [
+                Rule\Email::rule(),
+            ],
+            'profile' => [
+                One::rule()->withRules(
+                    [
+                        'website' => [
+                            Rule\Url::rule(),
+                        ],
+                    ]
+                ),
+            ],
+            'addresses' => [
+                Many::rule()->withRules(
+                    [
+                        'state' => [
+                            Rule\MatchRegularExpression::rule('/^[A-Z]{2}$/'),
+                        ],
+                    ]
+                )->withIndexKey('id'),
+            ],
+        ];
+
+        $expect = [
+            'email' => ['This value is not a valid email address.'],
+            'profile.website' => ['This value is not a valid URL.'],
+            'addresses.22.state' => ['Value is invalid.'],
+            'addresses.32.state' => ['Value is invalid.'],
+        ];
+        $validator = new Validator();
+        $results = $validator->validate($data, $rules);
+        $this->assertFalse($results->isValid());
+        $this->assertEquals($expect, $results->getErrors());
+    }
 }
 
 abstract class Model implements DataSetInterface, RulesProviderInterface
@@ -70,7 +126,7 @@ abstract class Model implements DataSetInterface, RulesProviderInterface
 /**
  * @internal
  */
-final class UserForm extends Model
+final class UserForm extends Model implements PostValidationHookInterface
 {
     /**
      * @var string
@@ -102,6 +158,10 @@ final class UserForm extends Model
             'profile' => $this->profileRules(),
             'addresses' => $this->addressesRules(),
         ];
+    }
+
+    public function processValidationResult(ResultSet $resultSet): void
+    {
     }
 
     private function firstnameRules(): array

@@ -6,6 +6,7 @@ namespace jin2chen\YiiValidator;
 
 use Yiisoft\Validator\ResultSet;
 use Yiisoft\Validator\Rule;
+use Yiisoft\Validator\RuleInterface;
 
 /**
  * @psalm-import-type AggregateRule from Validator
@@ -15,7 +16,7 @@ abstract class NestRule extends Rule implements NestRuleInterface
     private ?ResultSet $resultSet = null;
     private ?Validator $validator = null;
     /**
-     * @var Rule[][]
+     * @var RuleInterface[][]
      * @psalm-var AggregateRule
      */
     private iterable $rules = [];
@@ -54,7 +55,7 @@ abstract class NestRule extends Rule implements NestRuleInterface
     }
 
     /**
-     * @param Rule[][] $rules
+     * @param RuleInterface[][] $rules
      * @psalm-param AggregateRule $rules
      * @return NestRuleInterface
      */
